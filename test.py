@@ -1,18 +1,20 @@
-import openai
-from openai import OpenAI
-from openai.types.chat import ChatCompletion
+import google.generativeai as genai
 
-client = OpenAI(api_key="")  # API key removed
+# Configure the API key for Gemini
+genai.configure(api_key="")  # API key removed
 
 try:
-    response: ChatCompletion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": "Say hello"}]
-    )
+    # Initialize the Gemini model
+    model = genai.GenerativeModel('gemini-pro')
+    
+    # Generate content using Gemini
+    response = model.generate_content("Say hello")
+    
     print("✅ API key is working!")
-    print("Response:", response.choices[0].message.content)
+    print("Response:", response.text)
 
-except openai.AuthenticationError:
-    print("❌ Invalid API key.")
 except Exception as e:
-    print("⚠️ Something went wrong:", str(e))
+    if "API_KEY_INVALID" in str(e) or "invalid API key" in str(e).lower():
+        print("❌ Invalid API key.")
+    else:
+        print("⚠️ Something went wrong:", str(e))
